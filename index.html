@@ -110,6 +110,52 @@
             color: #FFF7ED;
         }
 
+        .stakeholder-section {
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, .16);
+        }
+
+        .stakeholder-section-title {
+            margin: 0 0 10px;
+            color: #FDE68A;
+            font-size: clamp(18px, 1.15vw, 23px);
+            font-weight: 800;
+        }
+
+        .stakeholder-coordination {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .stakeholder-entity {
+            padding: 12px;
+            border: 1px solid rgba(34, 211, 238, .28);
+            border-radius: 14px;
+            background: rgba(2, 6, 23, .2);
+        }
+
+        .stakeholder-entity h4 {
+            margin: 0 0 5px;
+            color: #DFFAFE;
+            font-size: clamp(18px, 1.15vw, 23px);
+        }
+
+        .stakeholder-entity p {
+            margin: 0;
+            font-size: clamp(15px, .95vw, 19px);
+        }
+
+        .stakeholder-link {
+            display: flex;
+            align-items: center;
+            color: var(--amber);
+            font-size: clamp(20px, 1.4vw, 28px);
+            font-weight: 900;
+        }
+
         .transition-heading {
             position: relative;
             display: grid;
@@ -808,6 +854,19 @@
             margin: 6px 0 0;
             color: #A7F3D0;
             font-size: clamp(15px, 1vw, 19px)
+        }
+
+        .problem-card .goal-change {
+            margin-top: 14px;
+            padding: 12px 16px;
+            border: 1px solid rgba(245, 158, 11, .55);
+            border-left: 5px solid var(--amber);
+            border-radius: 12px;
+            background: linear-gradient(100deg, rgba(245, 158, 11, .2), rgba(245, 158, 11, .06));
+            color: #FFF7ED;
+            font-size: clamp(18px, 1.2vw, 24px);
+            font-weight: 850;
+            box-shadow: 0 8px 24px rgba(245, 158, 11, .12);
         }
 
         .csr-flow {
@@ -1739,6 +1798,15 @@
                 max-width: 90vw;
             }
 
+            .stakeholder-coordination {
+                grid-template-columns: 1fr;
+            }
+
+            .stakeholder-link {
+                justify-content: center;
+                transform: rotate(90deg);
+            }
+
             .safe-return-video {
                 height: min(54vh, 560px);
                 min-height: 280px
@@ -1990,6 +2058,20 @@
                         <h3>Background</h3>
                         <p><strong>What is happening?</strong></p>
                         <p>Apollo 13 was on a Moon mission. Then a life-support failure changed the mission.</p>
+                        <div class="stakeholder-section">
+                            <p class="stakeholder-section-title fragment">Two entities, one mission</p>
+                            <div class="stakeholder-coordination">
+                                <div class="stakeholder-entity fragment">
+                                    <h4>Houston</h4>
+                                    <p>Mission Control: engineers and flight controllers guiding decisions from Earth.</p>
+                                </div>
+                                <div class="stakeholder-link fragment" aria-label="coordinates with">↔</div>
+                                <div class="stakeholder-entity fragment">
+                                    <h4>Odyssey</h4>
+                                    <p>The crew: three astronauts managing the spacecraft and their survival.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card answerbox fragment">
                         <h3>Problem</h3>
@@ -2001,7 +2083,7 @@
                             <p class="reveal-prompt fragment">What do you think is the key issue here?</p>
                             <p class="answer-reveal fragment"><strong>Answer:</strong> <br>How do we keep the crew alive
                                 and immediately bring them home?</p>
-                            <p class="answer-reveal fragment"><strong>Goal changed:</strong> Moon landing → Safe return to Earth</p>
+                            <p class="answer-reveal goal-change fragment"><strong>Goal changed:</strong> Moon landing → Safe return to Earth</p>
                         </div>
                     </div>
                 </div>
@@ -2071,12 +2153,17 @@
                         <p class="bigline">“There is a problem.”</p>
                         <p>They designed solutions the astronauts could actually use with the materials already on
                             board.</p>
+                        <div class="story-video-card fragment">
+                            <video controls preload="metadata" playsinline
+                                src="Clip3_Square_Peg_in_a_Round_Hole.mp4"
+                                aria-label="Apollo 13 recommendation solutions video clip"></video>
+                        </div>
                     </div>
                     <div class="card answerbox fragment">
                         <h3>Every recommendation needs:</h3>
                         <div class="recommend-steps">
                             <div class="recommend-step"><b>1</b><span>Action someone can execute</span></div>
-                            <div class="recommend-step"><b>2</b><span>Owner and timing</span></div>
+                            <div class="recommend-step"><b>2</b><span>Owner and timeline</span></div>
                             <div class="recommend-step"><b>3</b><span>Risk and next check</span></div>
                         </div>
                     </div>
@@ -2119,7 +2206,11 @@
                     <div class="csr-card fragment">
                         <h3>2. Before I Solve:<br><span class="accent"> S = Structure</span>  the problem</h3>
                         <p>Messy problems become manageable when structured.</p>
-                        <p class="small" style="margin-top:8px;">Break it into smaller pieces — then prioritize.</p>
+                        <ul class="small" style="margin-top:8px; padding-left:18px;">
+                            <li>Clear roles — no overlapping accountability</li>
+                            <li>Constant alignment — no silos</li>
+                            <li>Next constraint — prioritize the most critical fact-based risk</li>
+                        </ul>
                     </div>
                     <div class="csr-card fragment">
                         <h3>3. Before I Report: <br><span class="accent">R = Recommend</span> workable solutions with Next Steps</h3>

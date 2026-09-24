@@ -473,6 +473,161 @@
             font-size: clamp(14px, 1vw, 19px)
         }
 
+        .return-mystery .mystery-panel {
+            height: 68%;
+            flex: 0 0 68%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 24px;
+            text-align: center;
+            background:
+                radial-gradient(circle at 50% 45%, rgba(244, 180, 0, .2), transparent 45%),
+                repeating-linear-gradient(135deg, rgba(255, 255, 255, .04) 0 2px, transparent 2px 9px),
+                #101a2d;
+            border-bottom: 1px solid rgba(255, 255, 255, .15);
+        }
+
+        .return-mystery .mystery-mark {
+            color: #f4b400;
+            font-size: clamp(56px, 7vw, 104px);
+            font-weight: 800;
+            letter-spacing: .14em;
+            line-height: 1;
+        }
+
+        .return-mystery .mystery-label {
+            max-width: 15ch;
+            color: rgba(255, 255, 255, .86);
+            font-size: clamp(15px, 1.2vw, 22px);
+            font-weight: 700;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .story-video-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .story-video-card video {
+            width: 100%;
+            max-height: 260px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .15);
+            background: #050d1c
+        }
+
+        .inline-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center
+        }
+
+        .inline-action-btn,
+        .reveal-answer-btn {
+            border: 0;
+            border-radius: 999px;
+            padding: 10px 16px;
+            font: inherit;
+            font-weight: 700;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform .2s ease, opacity .2s ease
+        }
+
+        .inline-action-btn {
+            background: rgba(244, 180, 0, .18);
+            color: #f8d981;
+            border: 1px solid rgba(244, 180, 0, .45)
+        }
+
+        .reveal-answer-btn {
+            background: linear-gradient(135deg, #45d0ff, #7bf0cf);
+            color: #051524;
+            border: 1px solid rgba(255, 255, 255, .2)
+        }
+
+        .inline-action-btn:hover,
+        .reveal-answer-btn:hover {
+            transform: translateY(-1px)
+        }
+
+        .story-answer {
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: opacity .25s ease, max-height .25s ease;
+            margin: 0
+        }
+
+        .story-answer.visible {
+            opacity: 1;
+            max-height: 220px
+        }
+
+        .timeline-puzzle {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            margin-top: 10px
+        }
+
+        .timeline-step {
+            min-height: 84px;
+            padding: 12px 10px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(255, 255, 255, .04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-weight: 700;
+            transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease
+        }
+
+        .timeline-step strong {
+            display: block;
+            font-size: clamp(12px, .9vw, 17px)
+        }
+
+        .timeline-puzzle.is-revealed .timeline-step {
+            border-color: rgba(123, 240, 207, .8);
+            box-shadow: inset 0 0 0 1px rgba(123, 240, 207, .32);
+            background: rgba(123, 240, 207, .08)
+        }
+
+        .timeline-puzzle.is-revealed .timeline-step[data-answer="1"] { order: 1 }
+        .timeline-puzzle.is-revealed .timeline-step[data-answer="2"] { order: 2 }
+        .timeline-puzzle.is-revealed .timeline-step[data-answer="3"] { order: 3 }
+        .timeline-puzzle.is-revealed .timeline-step[data-answer="4"] { order: 4 }
+        .timeline-puzzle.is-revealed .timeline-step[data-answer="5"] { order: 5 }
+
+        .timeline-puzzle:not(.is-revealed) .timeline-step[data-answer="1"] { order: 3 }
+        .timeline-puzzle:not(.is-revealed) .timeline-step[data-answer="2"] { order: 1 }
+        .timeline-puzzle:not(.is-revealed) .timeline-step[data-answer="3"] { order: 5 }
+        .timeline-puzzle:not(.is-revealed) .timeline-step[data-answer="4"] { order: 2 }
+        .timeline-puzzle:not(.is-revealed) .timeline-step[data-answer="5"] { order: 4 }
+
+        .timeline-answer {
+            display: none;
+            margin-top: 10px;
+            padding: 12px 16px;
+            border-radius: 14px;
+            background: rgba(69, 208, 255, .12);
+            border: 1px solid rgba(69, 208, 255, .28)
+        }
+
+        .timeline-puzzle.is-revealed .timeline-answer {
+            display: block
+        }
+
         .apollo-section {
             min-height: 0;
             display: flex;
@@ -1611,7 +1766,7 @@
                 <div class="topbar">
                     <div>
                         <div class="icon">🚀</div>
-                        <div class="story-title">Mission → crisis → return</div>
+                        <div class="story-title">Mission → crisis → ???</div>
                     </div>
                     <span class="pill">The case in three visuals</span>
                 </div>
@@ -1649,26 +1804,19 @@
                             <div class="stage">Crisis</div>
                             <p><strong>Oxygen tank burst.</strong></p>
                             <p>Life-support systems at risk.</p>
-                            <p class="accent"><strong>Goal changed:</strong> Moon landing → crew home alive.</p>
                             <p class="source">Photo: NASA</p>
                         </div>
                     </div>
-                    <div class="media-card fragment"><a class="media-link"
-                            href="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
-                            data-full="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
-                            data-caption="Apollo 13 splashes down safely in the South Pacific, 17 April 1970. Source: NASA."><img
-                                loading="eager" referrerpolicy="no-referrer"
-                                src="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
-                                alt="Apollo 13 safe splashdown"
-                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-                            <div class="fallback" style="display:none;position:absolute;inset:0;height:auto">🌎<br>Image
-                                unavailable — nasa.gov</div>
-                        </a>
+                    <div class="media-card return-mystery fragment">
+                        <div class="mystery-panel" aria-label="The outcome is still unknown">
+                            <div class="mystery-mark">???</div>
+                            <div class="mystery-label">What happened?</div>
+                        </div>
                         <div class="media-body">
-                            <div class="stage">Return</div>
-                            <p><strong>One team.</strong></p>
-                            <p>Safe return to Earth.</p>
-                            <p class="source">Photo: NASA</p>
+                            <div class="stage">???</div>
+                            <p><strong>Outcome unknown.</strong></p>
+                            <p>We will reveal it at the end.</p>
+                            <p class="source">Stay tuned.</p>
                         </div>
                     </div>
                 </div>
@@ -1690,41 +1838,17 @@
                         <p><strong>Not just:</strong> “The oxygen tank burst.”</p>
                         <div class="reveal-prompts">
                             <p class="reveal-prompt fragment">What do you think is the key issue here?</p>
+                            <div class="story-video-card fragment">
+                                <video controls preload="metadata" playsinline src="Clip1_Clarify_the_problem_browser_safe.mp4" aria-label="Apollo 13 clarify the problem clip"></video>
+                            </div>
                             <p class="answer-reveal fragment"><strong>Answer:</strong> <br>How do we keep the crew alive
                                 and immediately bring them home?</p>
                             <p class="answer-reveal fragment"><strong>Goal changed:</strong> Moon landing → Safe return to Earth</p>
                         </div>
                     </div>
                 </div>
-                <div class="card fragment">
-                    <h3>Break it into smaller pieces — then prioritize.</h3>
-                    <p class="small">Quiz: which problem is most life-threatening first?</p>
-                </div>
-                <div class="problem-grid">
-                    <div class="card problem-card fragment">
-                        <h3>Navigation</h3>
-                        <p>Find the path home.</p>
-                    </div>
-                    <div class="card problem-card fragment">
-                        <h3>CO₂ build-up</h3>
-                        <p>Prevent toxic air.</p>
-                    </div>
-                    <div class="card problem-card fragment">
-                        <h3>Power loss</h3>
-                        <p>Keep systems running.</p>
-                    </div>
-                    <div class="card problem-card fragment">
-                        <h3>Oxygen leak</h3>
-                        <p>Stop immediate loss of life.</p>
-                    </div>
-                    <div class="card problem-card fragment">
-                        <h3>Lunar Module</h3>
-                        <p>Use it as a lifeboat.</p>
-                    </div>
-                </div>
             </main>
-            <footer class="note-box fragment"><b>Facilitator cue:</b> Ask participants to rank the five cards before
-                revealing the priority.</footer>
+            <footer class="note-box fragment"><b>Facilitator cue:</b> Let the clip land before you reveal the key issue.</footer>
         </section>
         <section class="slide featured-case-study" data-title="Apollo 13: S = Structure">
             <div class="kicker">Next: S = Structure</div>
@@ -1735,6 +1859,23 @@
                         <div class="story-title">How do we keep the crew alive
                                 and immediately <br> bring them home?</div>
                     </div><span class="pill">Structure under pressure</span>
+                </div>
+                <div class="card fragment">
+                    <h3>Break it into smaller pieces — then prioritize.</h3>
+                    <p class="small">Timeline puzzle: sort the five critical problems from most life-threatening to least.</p>
+                    <div class="timeline-puzzle" data-timeline-puzzle>
+                        <div class="timeline-step" data-answer="2"><strong>Power loss</strong></div>
+                        <div class="timeline-step" data-answer="4"><strong>CO₂ build-up</strong></div>
+                        <div class="timeline-step" data-answer="1"><strong>Oxygen leak</strong></div>
+                        <div class="timeline-step" data-answer="5"><strong>Navigation</strong></div>
+                        <div class="timeline-step" data-answer="3"><strong>Lunar module</strong></div>
+                    </div>
+                    <div class="timeline-answer">
+                        <strong>Priority order:</strong> 1) Oxygen leak → 2) Power loss → 3) Lunar module → 4) CO₂ build-up → 5) Navigation
+                    </div>
+                    <div class="inline-actions" style="margin-top:12px">
+                        <button class="reveal-answer-btn" type="button" data-reveal-timeline>Reveal answer</button>
+                    </div>
                 </div>
                 <div class="grid3 featured-overview-grid">
                     <div class="card fragment">
@@ -1803,7 +1944,7 @@
                         src="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
                         alt="Apollo 13 crew splashdown, photographed by NASA"
                         loading="eager">
-                    <a class="video-button" href="Apollo13_Splashdown.mp4"
+                    <a class="video-button" href="Apollo13_Splashdown_browser_safe.mp4"
                         target="_blank" rel="noopener noreferrer">
                         ▶ Watch the re-entry &amp; splashdown
                     </a>
@@ -1910,6 +2051,31 @@
             function next() { const fs = fragments(); if (frag < fs.length) { frag++; syncFragments(); return } if (i < slides.length - 1) { i++; render() } }
             function prev() { if (frag > 0) { frag--; syncFragments(); return } if (i > 0) { i--; render(); frag = fragments().length; syncFragments() } }
             function closeLightbox() { lightbox.classList.remove('active'); lightboxImg.src = ''; lightboxCap.textContent = '' }
+            document.querySelectorAll('[data-reveal-key-issue]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const card = button.closest('.story-video-card');
+                    const video = card ? card.querySelector('video') : null;
+                    const answer = card ? card.querySelector('[data-key-issue-answer]') : null;
+                    const reveal = () => {
+                        if (answer) answer.classList.add('visible');
+                        button.textContent = 'Answer revealed';
+                        button.disabled = true;
+                    };
+                    if (video) {
+                        video.currentTime = 0;
+                        video.play();
+                    }
+                    reveal();
+                });
+            });
+            document.querySelectorAll('[data-reveal-timeline]').forEach(button => {
+                button.addEventListener('click', () => {
+                    const puzzle = button.closest('.card')?.querySelector('[data-timeline-puzzle]');
+                    if (puzzle) puzzle.classList.add('is-revealed');
+                    button.textContent = 'Answer revealed';
+                    button.disabled = true;
+                });
+            });
             document.getElementById('nextBtn').addEventListener('click', next); document.getElementById('prevBtn').addEventListener('click', prev);
             document.querySelectorAll('.media-link').forEach(a => { a.addEventListener('click', e => { e.preventDefault(); lightboxImg.src = a.dataset.full || a.href; lightboxCap.textContent = a.dataset.caption || ''; lightbox.classList.add('active'); }); });
             closeBtn.addEventListener('click', closeLightbox); lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });

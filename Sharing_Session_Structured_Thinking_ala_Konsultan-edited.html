@@ -1,0 +1,1921 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sharing Session - Structured Thinking ala Konsultan</title>
+    <style>
+        :root {
+            --dark: #020617;
+            --navy: #0B1F3A;
+            --slate: #0F172A;
+            --cyan: #22D3EE;
+            --amber: #F59E0B;
+            --text: #E2E8F0;
+            --muted: #94A3B8
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+            background: #020617;
+            color: white;
+            font-family: "Segoe UI", Arial, sans-serif;
+            letter-spacing: -.01em
+        }
+
+        .deck {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 20% 10%, rgba(34, 211, 238, .13), transparent 30%), radial-gradient(circle at 90% 20%, rgba(245, 158, 11, .12), transparent 32%), linear-gradient(140deg, #020617 0%, #0B1F3A 62%, #0F172A 100%)
+        }
+
+        .slide {
+            position: absolute;
+            inset: 0;
+            padding: 38px 56px 70px;
+            opacity: 0;
+            transform: translateX(36px) scale(.985);
+            transition: .34s ease;
+            pointer-events: none;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            overflow: hidden
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            pointer-events: auto
+        }
+
+        .csr-question-slide,
+        .csr-toolkit-slide,
+        .closing-slide {
+            padding: 58px 88px 82px
+        }
+
+        .transition-heading {
+            position: relative;
+            display: grid;
+            justify-items: center;
+            margin-bottom: 18px
+        }
+
+        .transition-heading .transition-base,
+        .transition-heading .transition-overlay {
+            grid-area: 1 / 1;
+            margin: 0;
+            white-space: nowrap
+        }
+
+        .transition-heading .transition-overlay {
+            z-index: 1
+        }
+
+        .transition-continuation {
+            margin: 0 0 18px
+        }
+
+        .cover-slide .fragment {
+            opacity: 1;
+            transform: none;
+            filter: none
+        }
+
+        .speaker-intro-slide {
+            grid-template-rows: 1fr;
+            grid-template-columns: 31% 69%;
+            padding: 0;
+            background: radial-gradient(circle at 20% 10%, rgba(34, 211, 238, .13), transparent 30%), radial-gradient(circle at 90% 20%, rgba(245, 158, 11, .12), transparent 32%), linear-gradient(140deg, #020617 0%, #0B1F3A 62%, #0F172A 100%)
+        }
+
+        .speaker-left {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding: 7vh 3vw;
+            background: linear-gradient(170deg, rgba(2, 6, 23, .72), rgba(11, 31, 58, .55));
+            border-right: 1px solid rgba(255, 255, 255, .1)
+        }
+
+        .speaker-left::before,
+        .speaker-left::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none
+        }
+
+        .speaker-left::before {
+            width: 220px;
+            height: 220px;
+            right: -70px;
+            top: -70px;
+            background: rgba(34, 211, 238, .1)
+        }
+
+        .speaker-left::after {
+            width: 170px;
+            height: 170px;
+            left: -40px;
+            bottom: -60px;
+            background: rgba(245, 158, 11, .08)
+        }
+
+        .speaker-photo {
+            position: relative;
+            width: clamp(130px, 11vw, 182px);
+            height: clamp(130px, 11vw, 182px);
+            margin-bottom: 20px;
+            border: 4px solid var(--amber);
+            border-radius: 50%;
+            overflow: hidden;
+            background: var(--slate);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, .45)
+        }
+
+        .speaker-photo img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: cover;
+            object-position: center 18%
+        }
+
+        .speaker-name {
+            position: relative;
+            margin-bottom: 9px;
+            color: #fff;
+            font-size: clamp(25px, 2.1vw, 40px);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -.035em
+        }
+
+        .speaker-role {
+            position: relative;
+            margin-bottom: 6px;
+            color: #FDE68A;
+            font-size: clamp(14px, 1.05vw, 20px);
+            font-weight: 700;
+            line-height: 1.35
+        }
+
+        .speaker-org {
+            position: relative;
+            color: var(--muted);
+            font-size: clamp(12px, .85vw, 17px);
+            line-height: 1.5
+        }
+
+        .speaker-stats {
+            position: relative;
+            margin-top: auto;
+            margin-bottom: 40px;
+        }
+
+        .speaker-stats-label,
+        .speaker-about {
+            margin-bottom: 12px;
+            color: var(--cyan);
+            font-size: clamp(11px, .8vw, 16px);
+            font-weight: 850;
+            letter-spacing: .16em;
+            text-transform: uppercase
+        }
+
+        .speaker-stat-row {
+            display: flex;
+            gap: clamp(14px, 1.6vw, 28px)
+        }
+
+        .speaker-stat-number {
+            color: #fff;
+            font-size: clamp(21px, 1.7vw, 32px);
+            font-weight: 900;
+            line-height: 1
+        }
+
+        .speaker-stat-text {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: clamp(10px, .7vw, 14px);
+            line-height: 1.35
+        }
+
+        .speaker-right {
+            display: flex;
+            min-width: 0;
+            flex-direction: column;
+            padding: 6vh 3.5vw 4vh
+        }
+
+        .speaker-lede {
+            max-width: 900px;
+            margin: 0 0 24px;
+            color: var(--text);
+            font-size: clamp(15px, 1.05vw, 21px);
+            line-height: 1.5
+        }
+
+        .speaker-lede b,
+        .speaker-card li b {
+            color: #fff;
+            font-weight: 800
+        }
+
+        .speaker-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 14px;
+            margin-bottom: 20px
+        }
+
+        .speaker-card {
+            min-width: 0;
+            padding: clamp(14px, 1.1vw, 22px);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, .08);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .33);
+            backdrop-filter: blur(16px)
+        }
+
+        .speaker-card-icon {
+            width: 33px;
+            height: 33px;
+            display: grid;
+            place-items: center;
+            margin-bottom: 10px;
+            border: 1px solid rgba(245, 158, 11, .42);
+            border-radius: 10px;
+            background: rgba(245, 158, 11, .16);
+            color: #FDE68A;
+            font-size: 16px
+        }
+
+        .speaker-card h3 {
+            margin-bottom: 8px;
+            color: #DFFAFE;
+            font-size: clamp(14px, .95vw, 19px)
+        }
+
+        .speaker-card ul {
+            margin: 0;
+            padding: 0;
+            list-style: none
+        }
+
+        .speaker-card li {
+            position: relative;
+            margin-bottom: 4px;
+            padding-left: 15px;
+            color: var(--text);
+            font-size: clamp(12px, .82vw, 16px);
+            line-height: 1.5
+        }
+
+        .speaker-card li::before {
+            content: "";
+            position: absolute;
+            top: 7px;
+            left: 0;
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--amber);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, .16)
+        }
+
+        .speaker-session {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: auto;
+            margin-bottom: 40px;
+            padding: 16px 22px;
+            border: 1px solid rgba(255, 255, 255, .14);
+            border-left: 6px solid var(--amber);
+            border-radius: 18px;
+            background: rgba(15, 23, 42, .72)
+        }
+
+        .speaker-session-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: var(--amber);
+            color: var(--slate);
+            font-size: clamp(10px, .7vw, 14px);
+            font-weight: 900;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            white-space: nowrap
+        }
+
+        .speaker-session-divider {
+            width: 1px;
+            height: 44px;
+            background: rgba(255, 255, 255, .18)
+        }
+
+        .speaker-session-title {
+            color: #fff;
+            font-size: clamp(16px, 1.15vw, 23px);
+            font-weight: 850;
+            line-height: 1.2
+        }
+
+        .speaker-session-meta {
+            margin-top: 5px;
+            color: var(--muted);
+            font-size: clamp(11px, .78vw, 15px);
+            line-height: 1.5
+        }
+
+        .speaker-session-meta span {
+            color: #FDE68A;
+            font-weight: 700
+        }
+
+        .csr-question-slide>main,
+        .closing-slide>main {
+            min-height: 0
+        }
+
+        .csr-toolkit-slide>main {
+            width: min(100%, 1540px);
+            justify-self: center;
+            align-self: center
+        }
+
+        .csr-toolkit-slide .grid3 {
+            margin-top: 24px !important
+        }
+
+        .csr-toolkit-slide>main>.card {
+            margin-top: 24px !important
+        }
+
+        .slide>main {
+            min-width: 0
+        }
+
+        .featured-case-study main {
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 12px;
+            scrollbar-color: rgba(34, 211, 238, .7) rgba(255, 255, 255, .08);
+            scrollbar-width: thin
+        }
+
+        .featured-case-study .grid2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            align-items: stretch
+        }
+
+        .featured-case-study .grid2>.card {
+            height: 100%
+        }
+
+        .featured-case-study .featured-overview-grid {
+            align-items: stretch
+        }
+
+        .featured-case-study .featured-overview-grid>.card {
+            height: 100%
+        }
+
+        .choice-layout {
+            min-height: 0;
+            min-width: 0;
+            width: 100%;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            grid-template-rows: auto minmax(0, 1fr) minmax(0, 1fr);
+            gap: 16px;
+            align-items: stretch
+        }
+
+        .choice-layout>h2 {
+            grid-column: 1 / -1;
+            margin: 0
+        }
+
+        .choice-layout>* {
+            min-width: 0
+        }
+
+        .choice-layout>.card,
+        .choice-answer {
+            min-height: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .choice-layout>.casebox {
+            grid-column: 1;
+            grid-row: 2
+        }
+
+        .choice-layout>.answerbox {
+            grid-column: 2;
+            grid-row: 2
+        }
+
+        .choice-answer {
+            grid-column: 1 / -1;
+            grid-row: 3;
+            align-self: stretch;
+            margin: 0;
+            min-height: 0
+        }
+
+        .apollo-visual-grid {
+            min-height: 0;
+            align-items: stretch
+        }
+
+        .apollo-visual-grid .media-card {
+            height: min(60vh, 620px);
+            min-height: 0
+        }
+
+        .apollo-visual-grid .media-link {
+            height: 68%;
+            flex: 0 0 68%
+        }
+
+        .apollo-visual-grid .media-card img {
+            object-fit: cover;
+            object-position: center;
+            padding: 0;
+            transform: scale(1.02)
+        }
+
+        .apollo-visual-grid .media-body {
+            padding: 14px 16px;
+            justify-content: flex-start
+        }
+
+        .apollo-visual-grid .media-body p {
+            font-size: clamp(14px, 1vw, 19px)
+        }
+
+        .apollo-section {
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 14px
+        }
+
+        .apollo-section h2 {
+            margin-bottom: 0
+        }
+
+        .apollo-section .section-lead {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px
+        }
+
+        .apollo-section .section-lead .card,
+        .apollo-section .problem-card {
+            padding: 14px 16px
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 10px;
+            align-items: stretch
+        }
+
+        .problem-card {
+            min-height: 0;
+            height: min(22vh, 190px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .problem-card h3 {
+            font-size: clamp(16px, 1.15vw, 22px)
+        }
+
+        .problem-card p {
+            font-size: clamp(13px, .95vw, 17px);
+            margin: 3px 0
+        }
+
+        .recommend-layout {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 16px;
+            align-items: stretch;
+            min-height: 0
+        }
+
+        .recommend-layout>.card {
+            min-height: min(46vh, 440px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .recommend-steps {
+            display: grid;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .recommend-step {
+            display: grid;
+            grid-template-columns: 36px 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .12)
+        }
+
+        .recommend-step b {
+            display: grid;
+            width: 30px;
+            height: 30px;
+            place-items: center;
+            border-radius: 50%;
+            background: #F59E0B;
+            color: #0F172A;
+            font-size: 18px;
+            line-height: 1
+        }
+
+        .recommend-step span {
+            font-size: clamp(14px, 1vw, 19px)
+        }
+
+        .answerbox .recommend-step {
+            background: rgba(15, 23, 42, .1);
+            border-color: rgba(15, 23, 42, .18)
+        }
+
+        .reveal-prompts {
+            display: grid;
+            gap: 10px;
+            margin-top: 18px
+        }
+
+        .reveal-prompt {
+            margin: 0;
+            padding: 12px 16px;
+            border: 1px solid rgba(34, 211, 238, .35);
+            border-left: 5px solid var(--cyan);
+            border-radius: 12px;
+            background: rgba(34, 211, 238, .1);
+            color: #E0F2FE;
+            font-size: clamp(17px, 1.2vw, 23px);
+            font-weight: 750
+        }
+
+        .problem-card .reveal-prompts {
+            margin-top: 10px
+        }
+
+        .problem-card .reveal-prompt {
+            border-left-color: var(--amber);
+            border-color: rgba(245, 158, 11, .35);
+            background: rgba(245, 158, 11, .1);
+            color: #FEF3C7;
+            font-size: clamp(14px, .95vw, 18px)
+        }
+
+        .problem-card .answer-reveal {
+            margin: 6px 0 0;
+            color: #A7F3D0;
+            font-size: clamp(15px, 1vw, 19px)
+        }
+
+        .csr-flow {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 24px
+        }
+
+        .csr-flow-step,
+        .csr-card {
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(34, 211, 238, .4);
+            border-radius: 18px;
+            background: linear-gradient(145deg, rgba(34, 211, 238, .18), rgba(15, 23, 42, .7));
+            box-shadow: 0 14px 32px rgba(2, 6, 23, .24)
+        }
+
+        .csr-flow-step {
+            padding: 18px 16px;
+            text-align: center
+        }
+
+        .csr-flow-step:not(:last-child)::after {
+            content: "→";
+            position: absolute;
+            right: -18px;
+            top: 50%;
+            color: var(--amber);
+            font-size: 28px;
+            font-weight: 900;
+            transform: translateY(-50%);
+            z-index: 1
+        }
+
+        .csr-letter {
+            display: block;
+            color: var(--amber);
+            font-size: clamp(30px, 2.5vw, 48px);
+            line-height: .9;
+            font-weight: 950
+        }
+
+        .csr-name {
+            display: block;
+            margin-top: 8px;
+            color: white;
+            font-size: clamp(18px, 1.35vw, 26px);
+            font-weight: 850
+        }
+
+        .csr-title {
+            color: #E0F2FE;
+            text-shadow: 0 0 22px rgba(34, 211, 238, .24)
+        }
+
+        .csr-card {
+            border-top: 5px solid var(--cyan);
+            padding: 20px
+        }
+
+        .csr-card:nth-child(2) {
+            border-top-color: #A78BFA
+        }
+
+        .csr-card:nth-child(3) {
+            border-top-color: var(--amber)
+        }
+
+        .csr-card h3 {
+            color: white
+        }
+
+        .video-card {
+            min-height: 0;
+            height: min(48vh, 460px);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px
+        }
+
+        .return-image {
+            width: 100%;
+            max-width: 760px;
+            height: min(31vh, 290px);
+            min-height: 0;
+            flex: 0 1 auto;
+            border-radius: 16px;
+            background: #0F172A;
+            object-fit: contain;
+            object-position: center;
+            display: block
+        }
+
+        .video-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 10px 18px;
+            border-radius: 999px;
+            background: #F59E0B;
+            color: #0F172A;
+            font-size: clamp(14px, 1vw, 18px);
+            font-weight: 850;
+            text-decoration: none;
+            box-shadow: 0 10px 28px rgba(245, 158, 11, .24);
+            transition: transform .18s ease, background .18s ease
+        }
+
+        .video-button:hover {
+            background: #FDE68A;
+            transform: translateY(-2px)
+        }
+
+        .featured-case-study main::-webkit-scrollbar {
+            width: 8px
+        }
+
+        .featured-case-study main::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 999px
+        }
+
+        .featured-case-study main::-webkit-scrollbar-thumb {
+            background: rgba(34, 211, 238, .7);
+            border-radius: 999px
+        }
+
+        .practical-section main {
+            min-height: 0;
+            overflow-y: auto;
+            padding-right: 12px;
+            scrollbar-color: rgba(34, 211, 238, .7) rgba(255, 255, 255, .08);
+            scrollbar-width: thin
+        }
+
+        .practical-section main::-webkit-scrollbar {
+            width: 8px
+        }
+
+        .practical-section main::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 999px
+        }
+
+        .practical-section main::-webkit-scrollbar-thumb {
+            background: rgba(34, 211, 238, .7);
+            border-radius: 999px
+        }
+
+        .fragment {
+            opacity: 0;
+            transform: translateY(14px);
+            transition: .28s ease;
+            filter: blur(2px)
+        }
+
+        .fragment.visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0)
+        }
+
+        h1 {
+            font-size: clamp(42px, 3.5vw, 72px);
+            line-height: .98;
+            margin: 0 0 12px;
+            font-weight: 900;
+            letter-spacing: -.045em
+        }
+
+        h2 {
+            font-size: clamp(30px, 2.2vw, 44px);
+            line-height: 1.04;
+            margin: 0 0 12px;
+            font-weight: 850;
+            letter-spacing: -.035em
+        }
+
+        h3 {
+            font-size: clamp(20px, 1.45vw, 28px);
+            line-height: 1.12;
+            margin: 0 0 8px;
+            font-weight: 800;
+            color: #DFFAFE
+        }
+
+        p,
+        li {
+            font-size: clamp(17px, 1.25vw, 25px);
+            line-height: 1.28;
+            color: var(--text);
+            margin: 7px 0
+        }
+
+        .small {
+            font-size: clamp(12px, .8vw, 16px);
+            color: var(--muted)
+        }
+
+        .kicker {
+            font-size: clamp(12px, .9vw, 17px);
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--cyan);
+            font-weight: 850;
+            margin-bottom: 10px
+        }
+
+        .accent {
+            color: var(--amber)
+        }
+
+        .hero-sub {
+            font-size: clamp(24px, 1.7vw, 32px);
+            color: #FDE68A;
+            font-weight: 700
+        }
+
+        .hero-sub-highlight {
+            font-size: clamp(60px, 3.4vw, 64px);
+            color: #FDE68A;
+            font-weight: 900
+        }
+
+
+        .prompt {
+            font-size: clamp(28px, 2.2vw, 42px);
+            line-height: 1.12;
+            color: #FDE68A;
+            font-weight: 900
+        }
+
+        .bigline {
+            font-size: clamp(27px, 2vw, 38px);
+            line-height: 1.15;
+            font-weight: 850;
+            color: #fff
+        }
+
+        .quote {
+            font-size: clamp(28px, 2.2vw, 42px);
+            line-height: 1.16;
+            font-weight: 880;
+            color: #FFF7ED;
+            border-left: 8px solid var(--amber);
+            padding-left: 20px;
+            margin: 18px 0
+        }
+
+        .muted {
+            color: var(--muted)
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 12px 0 0
+        }
+
+        .bullets li {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start
+        }
+
+        .bullets li:before {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--amber);
+            margin-top: 12px;
+            box-shadow: 0 0 0 5px rgba(245, 158, 11, .16);
+            flex: 0 0 auto
+        }
+
+        .card {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .33);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: clamp(16px, 1.2vw, 24px)
+        }
+
+        .center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1.04fr .96fr;
+            gap: 22px;
+            align-items: center
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px
+        }
+
+        .grid5 {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px
+        }
+
+        .topbar,
+        .bottombar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px
+        }
+
+        .brand {
+            font-weight: 850;
+            color: #DFFAFE
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            border: 1px solid rgba(255, 255, 255, .17);
+            background: rgba(255, 255, 255, .08);
+            padding: 8px 13px;
+            border-radius: 999px;
+            color: #E0F2FE;
+            font-size: clamp(12px, .9vw, 17px);
+            font-weight: 800
+        }
+
+        .footer-note {
+            font-size: clamp(12px, .8vw, 16px);
+            color: var(--muted)
+        }
+
+        .icon {
+            font-size: clamp(38px, 3vw, 58px);
+            filter: drop-shadow(0 14px 30px rgba(0, 0, 0, .35))
+        }
+
+        .story-title {
+            font-size: clamp(28px, 2.2vw, 42px);
+            font-weight: 900;
+            line-height: 1;
+            margin: 4px 0 10px
+        }
+
+        .note-box {
+            border-top: 1px solid rgba(255, 255, 255, .14);
+            background: rgba(15, 23, 42, .62);
+            border-radius: 18px;
+            padding: 11px 16px;
+            margin-top: 10px;
+            color: #CBD5E1;
+            font-size: clamp(12px, .9vw, 17px)
+        }
+
+        .note-box b {
+            color: #FDE68A
+        }
+
+        .divider {
+            height: 2px;
+            background: linear-gradient(90deg, var(--cyan), transparent);
+            margin: 12px 0
+        }
+
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 13px;
+            margin-top: 24px
+        }
+
+        .node {
+            padding: 16px 22px;
+            border-radius: 22px;
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(255, 255, 255, .16);
+            font-weight: 850;
+            font-size: clamp(20px, 1.45vw, 28px)
+        }
+
+        .arrow {
+            font-size: clamp(26px, 1.9vw, 36px);
+            color: var(--cyan);
+            font-weight: 900
+        }
+
+        .chip {
+            display: inline-block;
+            background: rgba(245, 158, 11, .16);
+            border: 1px solid rgba(245, 158, 11, .42);
+            color: #FDE68A;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-weight: 800;
+            font-size: clamp(13px, .95vw, 18px);
+            margin: 5px
+        }
+
+        .mini {
+            font-size: clamp(13px, .95vw, 18px);
+            color: #CBD5E1
+        }
+
+        .habit-card {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 22px;
+            align-items: stretch
+        }
+
+        .casebox {
+            background: rgba(245, 158, 11, .12);
+            border: 1px solid rgba(245, 158, 11, .4)
+        }
+
+        .answerbox {
+            background: rgba(255, 247, 237, .96);
+            color: #0F172A
+        }
+
+        .answerbox p,
+        .answerbox li {
+            color: #334155
+        }
+
+        .answerbox h3,
+        .answerbox h2 {
+            color: #0F172A
+        }
+
+        .tree {
+            display: grid;
+            gap: 9px;
+            margin-top: 12px
+        }
+
+        .tree-root {
+            text-align: center;
+            font-size: clamp(20px, 1.45vw, 28px);
+            font-weight: 900;
+            padding: 14px;
+            border-radius: 16px;
+            background: var(--amber);
+            color: #111827
+        }
+
+        .branches {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 9px
+        }
+
+        .branch {
+            padding: 14px 8px;
+            text-align: center;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, .10);
+            border: 1px solid rgba(255, 255, 255, .14);
+            font-weight: 800;
+            font-size: clamp(14px, 1vw, 19px)
+        }
+
+        .template {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 9px;
+            margin-top: 12px
+        }
+
+        .template div {
+            min-height: 90px;
+            border-radius: 18px;
+            padding: 12px;
+            background: rgba(15, 23, 42, .88);
+            border: 1px solid rgba(15, 23, 42, .12)
+        }
+
+        .template b {
+            display: block;
+            color: #FDE68A;
+            font-size: clamp(14px, 1vw, 19px);
+            margin-bottom: 5px
+        }
+
+        .template span {
+            font-size: clamp(12px, .8vw, 16px);
+            color: #CBD5E1;
+            line-height: 1.25
+        }
+
+        .blank {
+            display: inline-block;
+            border-bottom: 3px solid #FDE68A;
+            min-width: 180px;
+            height: 28px
+        }
+
+        .media-card {
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .33);
+            min-height: 0;
+            height: clamp(280px, 42vh, 500px);
+            display: flex;
+            flex-direction: column
+        }
+
+        .media-link {
+            display: block;
+            cursor: zoom-in;
+            position: relative;
+            overflow: hidden;
+            background: #0F172A;
+            height: clamp(180px, 28vh, 330px);
+            flex: 0 0 clamp(180px, 28vh, 330px)
+        }
+
+        .media-link:after {
+            content: "Click to view full image";
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            background: rgba(2, 6, 23, .82);
+            color: #FDE68A;
+            border: 1px solid rgba(255, 255, 255, .24);
+            font-size: clamp(11px, .75vw, 15px);
+            font-weight: 800;
+            padding: 7px 10px;
+            border-radius: 999px;
+            opacity: 0;
+            transition: .18s;
+            z-index: 1
+        }
+
+        .media-link:hover:after {
+            opacity: 1
+        }
+
+        .media-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            background: #0F172A;
+            transform: scale(1.02)
+        }
+
+        .media-body {
+            padding: 16px;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center
+        }
+
+        .stage {
+            font-size: clamp(12px, .8vw, 16px);
+            text-transform: uppercase;
+            letter-spacing: .12em;
+            color: #FDE68A;
+            font-weight: 900;
+            margin-bottom: 6px
+        }
+
+        .source {
+            font-size: clamp(10px, .7vw, 14px);
+            color: #94A3B8;
+            margin-top: 8px
+        }
+
+        .fallback {
+            background: linear-gradient(135deg, #0F172A, #1E3A8A);
+            height: 390px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FDE68A;
+            font-weight: 900;
+            text-align: center;
+            padding: 20px
+        }
+
+        .nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 28px;
+            background: linear-gradient(180deg, transparent, rgba(2, 6, 23, .84));
+            z-index: 100
+        }
+
+        .btn {
+            border: 1px solid rgba(255, 255, 255, .16);
+            background: rgba(255, 255, 255, .08);
+            color: white;
+            border-radius: 16px;
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: clamp(16px, 1.1vw, 22px)
+        }
+
+        .btn:hover {
+            background: rgba(255, 255, 255, .16)
+        }
+
+        .progress-wrap {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            height: 5px;
+            background: rgba(255, 255, 255, .08);
+            z-index: 101
+        }
+
+        .progress {
+            height: 5px;
+            background: linear-gradient(90deg, var(--cyan), var(--amber));
+            width: 0
+        }
+
+        .slide-count {
+            font-size: clamp(12px, .9vw, 17px);
+            color: #CBD5E1
+        }
+
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(2, 6, 23, .95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+            padding: 32px
+        }
+
+        .lightbox.active {
+            display: flex
+        }
+
+        .lightbox img {
+            max-width: 94vw;
+            max-height: 88vh;
+            object-fit: contain;
+            border-radius: 18px;
+            box-shadow: 0 30px 90px rgba(0, 0, 0, .55)
+        }
+
+        .lightbox .close {
+            position: absolute;
+            top: 22px;
+            right: 28px;
+            border: 1px solid rgba(255, 255, 255, .24);
+            background: rgba(255, 255, 255, .1);
+            color: white;
+            border-radius: 999px;
+            padding: 10px 15px;
+            font-size: clamp(16px, 1.1vw, 22px);
+            cursor: pointer
+        }
+
+        .lightbox .caption {
+            position: absolute;
+            bottom: 18px;
+            left: 32px;
+            right: 32px;
+            color: #CBD5E1;
+            text-align: center;
+            font-size: clamp(12px, .9vw, 17px)
+        }
+
+        @media print {
+
+            html,
+            body {
+                overflow: visible;
+                background: white
+            }
+
+            .deck {
+                background: white
+            }
+
+            .slide {
+                position: relative;
+                opacity: 1;
+                transform: none;
+                display: grid;
+                height: 100vh;
+                page-break-after: always;
+                background: #0B1F3A
+            }
+
+            .fragment {
+                opacity: 1;
+                transform: none;
+                filter: none
+            }
+
+            .nav,
+            .progress-wrap,
+            .lightbox {
+                display: none !important
+            }
+        }
+
+        @media(max-width:1050px) {
+            .slide {
+                padding: 38px 30px 70px
+            }
+
+            .grid2,
+            .grid3,
+            .grid5,
+            .habit-card,
+            .branches,
+            .template {
+                grid-template-columns: 1fr
+            }
+
+            .media-card {
+                min-height: auto
+            }
+
+            .media-card img,
+            .fallback {
+                height: 220px
+            }
+
+            .choice-layout,
+            .apollo-section .section-lead,
+            .recommend-layout {
+                grid-template-columns: 1fr;
+                height: auto
+            }
+
+            .choice-layout>h2 {
+                grid-column: auto
+            }
+
+            .choice-layout>.card,
+            .choice-answer,
+            .recommend-layout>.card {
+                min-height: 180px
+            }
+
+            .choice-layout>.casebox,
+            .choice-layout>.answerbox,
+            .choice-answer {
+                grid-column: auto;
+                grid-row: auto
+            }
+
+            .problem-grid {
+                grid-template-columns: 1fr
+            }
+
+            .csr-flow {
+                grid-template-columns: 1fr
+            }
+
+            .csr-flow-step:not(:last-child)::after {
+                content: "↓";
+                right: 50%;
+                top: auto;
+                bottom: -22px;
+                transform: translateX(50%)
+            }
+
+            .problem-card {
+                height: auto;
+                min-height: 100px
+            }
+
+            .speaker-intro-slide {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                overflow-y: auto
+            }
+
+            .speaker-left {
+                padding: 30px
+            }
+
+            .speaker-stats {
+                margin-top: 24px
+            }
+
+            .speaker-right {
+                padding: 30px
+            }
+
+            .speaker-card-grid {
+                grid-template-columns: 1fr
+            }
+
+            h1 {
+                font-size: 42px
+            }
+
+            h2 {
+                font-size: 32px
+            }
+
+            p,
+            li {
+                font-size: 20px
+            }
+
+            .prompt {
+                font-size: 32px
+            }
+
+            .flow {
+                flex-direction: column
+            }
+
+            .arrow {
+                transform: rotate(90deg)
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="deck">
+        <div class="progress-wrap">
+            <div class="progress" id="progress"></div>
+        </div>
+        <section class="slide active cover-slide" data-title="Cover">
+            <div class="topbar"><span class="brand">Sharing Session</span><span class="pill">Pak Win review
+                    version</span></div>
+            <main class="center">
+                <div>
+                    <div class="kicker">A practical thinking session</div>
+                    <h1>Structured Thinking<br><span class="accent">ala Konsultan</span></h1>
+                    <p class="hero-sub">Dari Menemukan Masalah ke Menemukan Solusi</p>
+                    <p>A short conversation on how to think clearer when problems appear.</p>
+                </div>
+            </main>
+            <footer class="bottombar"><span class="footer-note">Win Jonhson</span><span class="footer-note">RGE Lifelong
+                    Learning Centre Auditorium + Zoom</span></footer>
+        </section>
+        <section class="slide speaker-intro-slide" data-title="Meet Your Speaker">
+            <div class="speaker-left">
+                <div class="kicker">Meet your speaker</div>
+                <div class="speaker-photo">
+                    <img src="Win_Jonhson.jpg" alt="Win Jonhson">
+                </div>
+                <div class="speaker-name">Win Jonhson, <span class="accent">PhD</span></div>
+                <div class="speaker-role">Deputy Group Business Controller</div>
+                <div class="speaker-org">Asian Agri · RGE Group<br>Singapore PR · Indonesian Citizen</div>
+                <div class="speaker-stats">
+                    <div class="speaker-stats-label">At a glance</div>
+                    <div class="speaker-stat-row">
+                        <div>
+                            <div class="speaker-stat-number">3 yrs</div>
+                            <div class="speaker-stat-text">Strategy consulting<br>at BCG</div>
+                        </div>
+                        <div>
+                            <div class="speaker-stat-number">50+</div>
+                            <div class="speaker-stat-text">Students mentored<br>at NUS</div>
+                        </div>
+                        <div>
+                            <div class="speaker-stat-number">PhD</div>
+                            <div class="speaker-stat-text">Materials Science<br>&amp; Engineering</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="speaker-right">
+                <div class="speaker-about">About the speaker</div>
+                <p class="speaker-lede">
+                    A <b>strategy and operations leader</b> whose career bridges the consulting room and the factory
+                    floor. Win advises senior executives on corporate strategy, governance, and business transformation
+                    — combining <b>consulting-grade structured thinking</b> with a scientist's analytical rigour and
+                    real industrial execution experience.
+                </p>
+                <div class="speaker-card-grid">
+                    <div class="speaker-card">
+                        <div class="speaker-card-icon">🏢</div>
+                        <h3>Now at Asian Agri</h3>
+                        <ul>
+                            <li>Leads enterprise-wide 5-year strategic planning &amp; capital allocation</li>
+                            <li>Board-level performance transformation via KPI governance &amp; executive dashboards</li>
+                        </ul>
+                    </div>
+                    <div class="speaker-card">
+                        <div class="speaker-card-icon">📊</div>
+                        <h3>Consulting track record</h3>
+                        <ul>
+                            <li>Former Consultant, Boston Consulting Group (BCG)</li>
+                            <li>Corporate strategy, growth &amp; market entry across energy, mining, financial
+                                services, industrials</li>
+                        </ul>
+                    </div>
+                    <div class="speaker-card">
+                        <div class="speaker-card-icon">🎓</div>
+                        <h3>Academic foundation</h3>
+                        <ul>
+                            <li>PhD, Materials Science &amp; Engineering — National University of Singapore</li>
+                            <li>B.Eng (Hons), Mechanical Engineering — University of Sheffield</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="speaker-session">
+                    <div class="speaker-session-badge">Sharing Session</div>
+                    <div class="speaker-session-divider"></div>
+                    <div>
+                        <div class="speaker-session-title">Structured Thinking ala Konsultan</div>
+                        <div class="speaker-session-meta">
+                            <span>Jumat, 25 September 2026</span> · 10.45 – 12.00 WIB · RGE Lifelong Learning Centre
+                            Auditorium + Zoom
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="slide" data-title="Opening: Feel the Friction">
+            <div class="kicker">Opening</div>
+            <main class="center">
+                <div>
+                    <h1 class="fragment">Have you ever discussed a problem for hours?</h1>
+                    <p class="hero-sub fragment">What do you usually end the discussion with?</p>
+                    <div class="reveal-prompts">
+                        <p class="reveal-prompt fragment">Agreement that there is a problem?</p>
+                        <p class="reveal-prompt fragment">More problems arising?</p>
+                        <p class="reveal-prompt fragment">Or a solution to work on?</p>
+                    </div>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator prompt:</b> Pause after the first question. Ask the floor
+                what they usually end the discussion with, then reveal each triggering question one at a time.</footer>
+        </section>
+        <section class="slide" data-title="Exercise: Problems or Solutions">
+            <div class="kicker">Exercise</div>
+            <main class="choice-layout">
+                <h2 class="fragment">Which is easier?</h2>
+                <div class="card casebox fragment">
+                    <h2>A</h2>
+                    <p class="bigline">Finding problems</p>
+                </div>
+                <div class="card answerbox fragment">
+                    <h2>B</h2>
+                    <p class="bigline">Finding workable solutions</p>
+                </div>
+                <div class="card choice-answer fragment">
+                    <p class="prompt">Organizations don't pay us to find problems.</p>
+                    <p>Problems exist naturally. Organizations pay us to solve them.</p>
+                    <p class="small">Quick gut check: think of the last issue you personally raised. Did you also bring
+                        the next step — or did you leave that for someone else?</p>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator prompt:</b> Ask participants to vote A or B, then pause
+                before revealing the message.</footer>
+        </section>
+        <section class="slide transition-slide" data-title="Transition: Thinking Under Pressure">
+            <div class="kicker">Transition</div>
+            <main class="center">
+                <div>
+                    <h1 class="transition-heading">
+                        <span class="transition-base fragment">Your job performance affects company's KPI</span>
+                        <span class="transition-overlay fragment">Imagine if your job performance not only <br> affects
+                            company's KPI...</span>
+                    </h1>
+                    <p class="hero-sub-highlight transition-continuation fragment">but also affects people's lives</p>
+                    <div class="fragment">
+                        <div class="divider"></div>
+                        <p class="prompt">This actually happened on Apollo 13.</p>
+                    </div>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator bridge:</b> Move from the everyday frustration of
+                problem-focused meetings to a real survival situation.</footer>
+        </section>
+        <section class="slide featured-case-study" data-title="Apollo 13: Mission, Crisis, Return">
+            <div class="kicker">Apollo 13</div>
+            <main>
+                <div class="topbar">
+                    <div>
+                        <div class="icon">🚀</div>
+                        <div class="story-title">Mission → crisis → return</div>
+                    </div>
+                    <span class="pill">The case in three visuals</span>
+                </div>
+                <div class="grid3 apollo-visual-grid">
+                    <div class="media-card fragment"><a class="media-link"
+                            href="https://images-assets.nasa.gov/image/S70-38747/S70-38747~large.jpg"
+                            data-full="https://images-assets.nasa.gov/image/S70-38747/S70-38747~large.jpg"
+                            data-caption="Apollo 13 lifts off from Kennedy Space Center, 11 April 1970. Source: NASA."><img
+                                loading="eager" referrerpolicy="no-referrer"
+                                src="https://images-assets.nasa.gov/image/S70-38747/S70-38747~large.jpg"
+                                alt="Apollo 13 launch"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback" style="display:none;position:absolute;inset:0;height:auto">🚀<br>Image
+                                unavailable — nasa.gov</div>
+                        </a>
+                        <div class="media-body">
+                            <div class="stage">Mission</div>
+                            <p><strong>Reach the Moon.</strong></p>
+                            <p>Explore. Test. Learn.</p>
+                            <p class="source">Photo: NASA</p>
+                        </div>
+                    </div>
+                    <div class="media-card fragment"><a class="media-link"
+                            href="https://images-assets.nasa.gov/image/as13-58-8464/as13-58-8464~large.jpg"
+                            data-full="https://images-assets.nasa.gov/image/as13-58-8464/as13-58-8464~large.jpg"
+                            data-caption="The damaged Apollo 13 Service Module, photographed after jettison — an entire panel was blown away by the oxygen tank rupture. Source: NASA."><img
+                                loading="eager" referrerpolicy="no-referrer"
+                                src="https://images-assets.nasa.gov/image/as13-58-8464/as13-58-8464~large.jpg"
+                                alt="Apollo 13 crisis: damaged service module"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback" style="display:none;position:absolute;inset:0;height:auto">⚠️<br>Image
+                                unavailable — nasa.gov</div>
+                        </a>
+                        <div class="media-body">
+                            <div class="stage">Crisis</div>
+                            <p><strong>Oxygen tank burst.</strong></p>
+                            <p>Life-support systems at risk.</p>
+                            <p class="accent"><strong>Goal changed:</strong> Moon landing → crew home alive.</p>
+                            <p class="source">Photo: NASA</p>
+                        </div>
+                    </div>
+                    <div class="media-card fragment"><a class="media-link"
+                            href="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
+                            data-full="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
+                            data-caption="Apollo 13 splashes down safely in the South Pacific, 17 April 1970. Source: NASA."><img
+                                loading="eager" referrerpolicy="no-referrer"
+                                src="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
+                                alt="Apollo 13 safe splashdown"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                            <div class="fallback" style="display:none;position:absolute;inset:0;height:auto">🌎<br>Image
+                                unavailable — nasa.gov</div>
+                        </a>
+                        <div class="media-body">
+                            <div class="stage">Return</div>
+                            <p><strong>One team.</strong></p>
+                            <p>Safe return to Earth.</p>
+                            <p class="source">Photo: NASA</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator cue:</b> Reveal the three beats one at a time.</footer>
+        </section>
+        <section class="slide featured-case-study" data-title="Apollo 13: C = Clarify">
+            <div class="kicker">Start with C = Clarify</div>
+            <main class="apollo-section">
+                <h2 class="fragment">Do not confuse the event with the problem.</h2>
+                <div class="section-lead">
+                    <div class="card casebox fragment">
+                        <h3>Background</h3>
+                        <p><strong>What is happening?</strong></p>
+                        <p>Apollo 13 was on a Moon mission. Then a life-support failure changed the mission.</p>
+                    </div>
+                    <div class="card answerbox fragment">
+                        <h3>Problem</h3>
+                        <p><strong>Not just:</strong> “The oxygen tank burst.”</p>
+                        <div class="reveal-prompts">
+                            <p class="reveal-prompt fragment">What do you think is the key issue here?</p>
+                            <p class="answer-reveal fragment"><strong>Answer:</strong> <br>How do we keep the crew alive
+                                and immediately bring them home?</p>
+                            <p class="answer-reveal fragment"><strong>Goal changed:</strong> Moon landing → Safe return to Earth</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card fragment">
+                    <h3>Break it into smaller pieces — then prioritize.</h3>
+                    <p class="small">Quiz: which problem is most life-threatening first?</p>
+                </div>
+                <div class="problem-grid">
+                    <div class="card problem-card fragment">
+                        <h3>Navigation</h3>
+                        <p>Find the path home.</p>
+                    </div>
+                    <div class="card problem-card fragment">
+                        <h3>CO₂ build-up</h3>
+                        <p>Prevent toxic air.</p>
+                    </div>
+                    <div class="card problem-card fragment">
+                        <h3>Power loss</h3>
+                        <p>Keep systems running.</p>
+                    </div>
+                    <div class="card problem-card fragment">
+                        <h3>Oxygen leak</h3>
+                        <p>Stop immediate loss of life.</p>
+                    </div>
+                    <div class="card problem-card fragment">
+                        <h3>Lunar Module</h3>
+                        <p>Use it as a lifeboat.</p>
+                    </div>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator cue:</b> Ask participants to rank the five cards before
+                revealing the priority.</footer>
+        </section>
+        <section class="slide featured-case-study" data-title="Apollo 13: S = Structure">
+            <div class="kicker">Next: S = Structure</div>
+            <main class="apollo-section">
+                <div class="topbar">
+                    <div>
+                        <div class="icon">🧭</div>
+                        <div class="story-title">How do we keep the crew alive
+                                and immediately <br> bring them home?</div>
+                    </div><span class="pill">Structure under pressure</span>
+                </div>
+                <div class="grid3 featured-overview-grid">
+                    <div class="card fragment">
+                        <h3>Clear roles</h3>
+                        <p>Each person owned a distinct task.</p>
+                        <p class="small">No overlapping accountability.</p>
+                    </div>
+                    <div class="card fragment">
+                        <h3>Constant alignment</h3>
+                        <p>Mission Control and astronauts shared facts continuously.</p>
+                        <p class="small">No silos.</p>
+                    </div>
+                    <div class="card fragment">
+                        <h3>Next constraint</h3>
+                        <p>They prioritized the most critical fact-based risk.</p>
+                        <p class="small">Then moved to the next one.</p>
+                    </div>
+                </div>
+                <div class="card answerbox fragment">
+                    <p class="bigline">One team. Clear roles. Shared facts. Next critical constraint.</p>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator cue:</b> The team did not solve everything at once.
+            </footer>
+        </section>
+        <section class="slide featured-case-study" data-title="Apollo 13: R = Recommend">
+            <div class="kicker">Then: R = Recommend</div>
+            <main class="apollo-section">
+                <div class="topbar">
+                    <div>
+                        <div class="icon">🎯</div>
+                        <div class="story-title">Make the solution executable</div>
+                    </div><span class="pill">Good on paper is not enough</span>
+                </div>
+                <div class="recommend-layout">
+                    <div class="card casebox fragment">
+                        <h3>NASA engineers did not send a report saying:</h3>
+                        <p class="bigline">“There is a problem.”</p>
+                        <p>They designed solutions the astronauts could actually use with the materials already on
+                            board.</p>
+                    </div>
+                    <div class="card answerbox fragment">
+                        <h3>Every recommendation needs:</h3>
+                        <div class="recommend-steps">
+                            <div class="recommend-step"><b>1</b><span>Action someone can execute</span></div>
+                            <div class="recommend-step"><b>2</b><span>Owner and timing</span></div>
+                            <div class="recommend-step"><b>3</b><span>Risk and next check</span></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator bridge:</b> Recommend the next workable move, not only the
+                right analysis.</footer>
+        </section>
+        <section class="slide featured-case-study" data-title="Apollo 13: Safe Return">
+            <div class="kicker">The story concludes</div>
+            <main class="apollo-section">
+                <div class="topbar">
+                    <div>
+                        <div class="icon">🌎</div>
+                        <div class="story-title">They made it home.</div>
+                    </div><span class="pill">Clarify → Structure → Recommend</span>
+                </div>
+                <div class="card video-card fragment">
+                    <img class="return-image"
+                        src="https://images-assets.nasa.gov/image/S70-35638/S70-35638~large.jpg"
+                        alt="Apollo 13 crew splashdown, photographed by NASA"
+                        loading="eager">
+                    <a class="video-button" href="Apollo13_Splashdown.mp4"
+                        target="_blank" rel="noopener noreferrer">
+                        ▶ Watch the re-entry &amp; splashdown
+                    </a>
+                    <p class="small">Apollo 13 splashdown footage — use the clip to close the case with the visible
+                        result: the crew returned safely to Earth.</p>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Closing message:</b> Clear thinking turns a crisis into the next safe
+                move. <b>Tech check:</b> confirm the venue/Zoom connection can play this clip before the session — have
+                the splashdown story ready to narrate live as backup.</footer>
+        </section>
+        <section class="slide csr-question-slide" data-title="CSR: Your Turn">
+            <main class="center">
+                <div>
+                    <div class="kicker fragment">The question for today</div>
+                    <h1 class="fragment">How will you move<br><span class="accent">from problem to solution?</span></h1>
+                    <div class="csr-flow fragment" aria-label="Clarify, Structure, Recommend">
+                        <div class="csr-flow-step"><span class="csr-letter">C</span><span
+                                class="csr-name">Clarify</span></div>
+                        <div class="csr-flow-step"><span class="csr-letter">S</span><span
+                                class="csr-name">Structure</span></div>
+                        <div class="csr-flow-step"><span class="csr-letter">R</span><span
+                                class="csr-name">Recommend</span></div>
+                    </div>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Facilitator bridge:</b> Ask participants to carry the CSR sequence
+                into their own work.</footer>
+        </section>
+        <section class="slide practical-section csr-toolkit-slide" data-title="One Slide Toolkit">
+            <div class="kicker">Final takeaway</div>
+            <main>
+                <h2 class="csr-title fragment">Clarify → Structure → Recommend</h2>
+                <div class="grid3" style="margin-top:18px">
+                    <div class="csr-card fragment">
+                        <h3>1. Before I Start: <span class="accent">Clarify</span></h3>
+                        <p>What is the context? What decision is being supported?</p>
+                    </div>
+                    <div class="csr-card fragment">
+                        <h3>2. Before I solve: <span class="accent">Structure</span></h3>
+                        <p>How can I break this problem into clear parts?</p>
+                    </div>
+                    <div class="csr-card fragment">
+                        <h3>3. Before I report: <span class="accent">Recommend a workable solution</span> with next
+                                steps.</h3>
+                        <p>What recommendations, risk, and next step will I include?</p>
+                    </div>
+                </div>
+                <div class="card fragment" style="margin-top:18px">
+                    <p class="bigline">Starting tomorrow...</p>
+                    <p>The next time I receive a problem, I will first <span class="blank"></span></p>
+                    <p>The next time I send a report, I will include <span class="blank"></span></p>
+                </div>
+            </main>
+            <footer class="note-box fragment"><b>Pak Win note:</b> Ask everyone to write silently first. Then invite two
+                or three volunteers.</footer>
+        </section>
+        <section class="slide practical-section closing-slide" data-title="Closing">
+            <main class="center">
+                <div>
+                    <h1 class="fragment">Structured Thinking<br><span class="accent">ala Konsultan</span></h1>
+                    <p class="quote fragment">The people who grow fastest are not those who report the most problems.
+                    </p>
+                    <p class="quote fragment">They are the people who help solve them.</p>
+                    <p class="hero-sub fragment">Thank you</p>
+                </div>
+            </main>
+        </section>
+    </div>
+    <div class="lightbox" id="lightbox"><button class="close" id="lightboxClose">Close ×</button><img id="lightboxImg"
+            alt="Full image">
+        <div class="caption" id="lightboxCap"></div>
+    </div>
+    <div class="nav"><button class="btn" id="prevBtn">←</button><span class="slide-count" id="slideCount">1 /
+            1</span><span class="slide-count">Use ← →, Space, Home, End. Click any story image to enlarge.</span><button
+            class="btn" id="nextBtn">→</button></div>
+    <script>
+        (function () {
+            const slides = [...document.querySelectorAll('.slide')], progress = document.getElementById('progress'), count = document.getElementById('slideCount'); let i = 0, frag = 0;
+            const lightbox = document.getElementById('lightbox'), lightboxImg = document.getElementById('lightboxImg'), lightboxCap = document.getElementById('lightboxCap'), closeBtn = document.getElementById('lightboxClose');
+            function fragments() { return [...slides[i].querySelectorAll('.fragment')] }
+            function syncFragments() {
+                const fs = fragments();
+                fs.forEach((el, idx) => el.classList.toggle('visible', idx < frag));
+                if (slides[i].classList.contains('transition-slide')) {
+                    fs.forEach((el, idx) => {
+                        const visible = frag === 1 ? idx === 0 : frag > 1 && idx > 0 && idx < frag;
+                        el.classList.toggle('visible', visible);
+                    });
+                }
+                if (frag > 0 && (slides[i].classList.contains('featured-case-study') || slides[i].classList.contains('practical-section'))) {
+                    fs[frag - 1].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                }
+            }
+            function render() {
+                slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+                const content = slides[i].querySelector('main');
+                if (content && (slides[i].classList.contains('featured-case-study') || slides[i].classList.contains('practical-section'))) content.scrollTop = 0;
+                frag = 0;
+                syncFragments();
+                progress.style.width = ((i + 1) / slides.length * 100) + '%';
+                count.textContent = (i + 1) + ' / ' + slides.length + ' · ' + (slides[i].dataset.title || '')
+            }
+            function next() { const fs = fragments(); if (frag < fs.length) { frag++; syncFragments(); return } if (i < slides.length - 1) { i++; render() } }
+            function prev() { if (frag > 0) { frag--; syncFragments(); return } if (i > 0) { i--; render(); frag = fragments().length; syncFragments() } }
+            function closeLightbox() { lightbox.classList.remove('active'); lightboxImg.src = ''; lightboxCap.textContent = '' }
+            document.getElementById('nextBtn').addEventListener('click', next); document.getElementById('prevBtn').addEventListener('click', prev);
+            document.querySelectorAll('.media-link').forEach(a => { a.addEventListener('click', e => { e.preventDefault(); lightboxImg.src = a.dataset.full || a.href; lightboxCap.textContent = a.dataset.caption || ''; lightbox.classList.add('active'); }); });
+            closeBtn.addEventListener('click', closeLightbox); lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });
+            document.addEventListener('keydown', e => { if (lightbox.classList.contains('active')) { if (e.key === 'Escape' || e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); closeLightbox(); } return; } if (['ArrowRight', 'PageDown', ' '].includes(e.key)) { e.preventDefault(); next() } if (['ArrowLeft', 'PageUp'].includes(e.key)) { e.preventDefault(); prev() } if (e.key === 'Home') { i = 0; render() } if (e.key === 'End') { i = slides.length - 1; render(); frag = fragments().length; syncFragments() } }); render();
+        })();
+    </script>
+</body>
+
+</html>

@@ -1563,6 +1563,15 @@
             background: rgba(255, 255, 255, .16)
         }
 
+        .export-btn {
+            border-color: rgba(34, 211, 238, .42);
+            background: rgba(34, 211, 238, .12);
+            color: #DFFAFE;
+            font-size: clamp(12px, .86vw, 15px);
+            font-weight: 700;
+            white-space: nowrap
+        }
+
         .progress-wrap {
             position: fixed;
             left: 0;
@@ -1665,20 +1674,31 @@
             html,
             body {
                 overflow: visible;
-                background: white
+                height: auto;
+                background: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact
             }
 
             .deck {
+                width: 100%;
+                height: auto;
                 background: white
             }
 
             .slide {
                 position: relative;
-                opacity: 1;
-                transform: none;
+                inset: auto;
+                width: 100%;
+                opacity: 1 !important;
+                transform: none !important;
                 display: grid;
-                height: 100vh;
+                height: auto;
+                min-height: 100vh;
+                overflow: visible !important;
+                pointer-events: auto;
                 page-break-after: always;
+                break-after: page;
                 background: #0B1F3A
             }
 
@@ -1686,6 +1706,25 @@
                 opacity: 1;
                 transform: none;
                 filter: none
+            }
+
+            .slide>main,
+            .featured-case-study main,
+            .practical-section main,
+            .closing-slide>main {
+                height: auto;
+                max-height: none;
+                overflow: visible !important
+            }
+
+            .story-answer {
+                opacity: 1;
+                max-height: none;
+                overflow: visible
+            }
+
+            .timeline-answer {
+                display: block
             }
 
             .nav,
@@ -1966,7 +2005,7 @@
                     <p class="bigline">Finding workable solutions</p>
                 </div>
                 <div class="card choice-answer fragment">
-                    <p class="prompt">Organizations don't pay us to find problems.</p>
+                    <p class="prompt">Organizations don't pay us <span style="text-decoration: underline;"> merely to find problems.</span></p>
                     <p>Problems exist naturally. Organizations pay us to solve them.</p>
                     <p class="small">Quick gut check: think of the last issue you personally raised. Did you also bring
                         the next step — or did you leave that for someone else?</p>
@@ -2261,6 +2300,7 @@
             </select>
         </div>
         <span class="slide-count">Use ← →, Space, Home, End. Click story images to enlarge.</span>
+        <button class="btn export-btn" id="exportPdfBtn" type="button">Export to PDF</button>
         <button class="btn" id="nextBtn" aria-label="Next slide">→</button>
     </div>
     <script>
@@ -2305,6 +2345,7 @@
             function next() { const fs = fragments(); if (frag < fs.length) { frag++; syncFragments(); return } if (i < slides.length - 1) { i++; render() } }
             function prev() { if (frag > 0) { frag--; syncFragments(); return } if (i > 0) { i--; render(); frag = fragments().length; syncFragments() } }
             function closeLightbox() { lightbox.classList.remove('active'); lightboxImg.src = ''; lightboxCap.textContent = '' }
+            function exportToPdf() { window.print() }
             buildSlideJump();
             slideJump.addEventListener('change', (event) => {
                 goToSlide(Number(event.target.value));
@@ -2334,6 +2375,7 @@
                     button.disabled = true;
                 });
             });
+            document.getElementById('exportPdfBtn').addEventListener('click', exportToPdf);
             document.getElementById('nextBtn').addEventListener('click', next); document.getElementById('prevBtn').addEventListener('click', prev);
             document.querySelectorAll('.media-link').forEach(a => { a.addEventListener('click', e => { e.preventDefault(); lightboxImg.src = a.dataset.full || a.href; lightboxCap.textContent = a.dataset.caption || ''; lightbox.classList.add('active'); }); });
             closeBtn.addEventListener('click', closeLightbox); lightbox.addEventListener('click', e => { if (e.target === lightbox) closeLightbox(); });

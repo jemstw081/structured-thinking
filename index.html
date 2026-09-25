@@ -2017,7 +2017,6 @@
             <main class="center">
                 <div>
                     <h1 class="transition-heading">
-                        <span class="transition-base fragment">Your job performance affects company's KPI</span>
                         <span class="transition-overlay fragment">Imagine if your job performance not only <br> affects
                             company's KPI...</span>
                     </h1>
@@ -2311,12 +2310,6 @@
             function syncFragments() {
                 const fs = fragments();
                 fs.forEach((el, idx) => el.classList.toggle('visible', idx < frag));
-                if (slides[i].classList.contains('transition-slide')) {
-                    fs.forEach((el, idx) => {
-                        const visible = frag === 1 ? idx === 0 : frag > 1 && idx > 0 && idx < frag;
-                        el.classList.toggle('visible', visible);
-                    });
-                }
                 if (frag > 0 && (slides[i].classList.contains('featured-case-study') || slides[i].classList.contains('practical-section'))) {
                     fs[frag - 1].scrollIntoView({ block: 'nearest', behavior: 'smooth' });
                 }
